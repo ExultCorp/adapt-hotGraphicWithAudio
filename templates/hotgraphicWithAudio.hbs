@@ -1,0 +1,70 @@
+{{! Maintainers - Kevin Corry, Shahfaisal Patel <shahfaisal.patel@exultcorp.com>}}
+<div class="hotgraphicWithAudio-inner component-inner" role="region" aria-label="{{_globals._components._hotGraphic.ariaRegion}}" {{#if _globals._components._hotGraphic.ariaRegion}}tabindex="0"{{/if}}>
+    {{> component this}}
+    <div class="hotgraphicWithAudio-widget component-widget">
+
+        <div class="hotgraphicWithAudio-graphic">
+
+            <div class="hotgraphicWithAudio-popup" role="dialog" aria-label="{{_globals._accessibility._ariaLabels.hotgraphicWithAudioPopUp}}">
+
+                <div class="hotgraphicWithAudio-popup-toolbar component-item-color clearfix">
+                    <div class="hotgraphicWithAudio-popup-nav component-item-color">
+                        <a href="#" class="hotgraphicWithAudio-popup-controls back" aria-label="{{_globals._accessibility._ariaLabels.previous}}" role="button">
+                            <div class="hotgraphicWithAudio-popup-arrow-l component-item-text-color icon icon-controls-small-left"></div>
+                        </a>
+                        <div class="hotgraphicWithAudio-popup-count component-item-text-color">
+                            <span class="current">1</span>/<span class="total">3</span>
+                        </div>
+                        <a href="#" class="hotgraphicWithAudio-popup-controls next" aria-label="{{_globals._accessibility._ariaLabels.next}}" role="button">
+                            <div class="hotgraphicWithAudio-popup-arrow-r component-item-text-color icon icon-controls-small-right"></div>
+                        </a>
+                    </div>
+                    <a href="#" class="hotgraphicWithAudio-popup-audio">
+                        <div class="hotgraphicWithAudio-popup-sound component-item-text-color icon icon-sound"></div>
+                    </a>
+                    <a href="#" class="hotgraphicWithAudio-popup-done" aria-label="{{_globals._accessibility._ariaLabels.closePopup}}" role="button">
+                        <div class="hotgraphicWithAudio-popup-close component-item-text-color icon icon-cross"></div>
+                    </a>
+                </div>
+
+                <div class="hotgraphicWithAudio-popup-inner clearfix">
+                    {{#each _items}}
+                    <div class="hotgraphicWithAudio-item component-item item-{{@index}}">
+                        <div class="hotgraphicWithAudio-item-graphic">
+                            <div class="hotgraphicWithAudio-item-graphic-inner">
+                                <img src="{{_graphic.src}}" alt="{{_graphic.alt}}"/>
+                            </div>
+                        </div>
+                        <div class="hotgraphicWithAudio-item-body">
+                            <div class="hotgraphicWithAudio-item-body-inner">
+                                <div class="h5">
+                                    {{{a11y_text title}}}
+                                </div>
+                                <p>
+                                    {{{a11y_text body}}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+
+            <img src="{{_graphic.src}}" alt="{{_graphic.alt}}"/>
+            {{#each _items}}
+            <a href="#" class="hotgraphicWithAudio-graphic-pin component-item-text-color {{#if _isVisited}}visited{{/if}}" data-id="item-{{@index}}" style="top:{{{_top}}}%; left:{{{_left}}}%;" role="button" aria-label="Item {{numbers @index}}. {{title}}.">
+                <div class="hotgraphicWithAudio-graphic-pin-icon component-item-color icon icon-pin"></div>
+                {{#if audioSrc}}
+                <div class="hotgraphicWithAudio-item-audio">
+                    <audio preload="none">
+                        {{#each audioTypes}}
+                        <source src="{{../audioSrc}}.{{type}}" type="{{codec}}">
+                        {{/each}}
+                    </audio>
+                </div>
+                {{/if}}
+            </a>
+            {{/each}}
+        </div>
+    </div>
+</div>

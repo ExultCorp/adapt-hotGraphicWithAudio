@@ -1,0 +1,22 @@
+{
+  "name": "adapt-hotgraphicWithAudio",
+  "version": "1.0.0",
+  "homepage": "https://github.com/BATraining/adapt-hotgraphicWithAudio",
+  "authors": [
+    "Kevin Corry <kevinc@learningpool.com>",
+    "Shahfaisal Patel <shahfaisal.patel@exultcorp.com>"
+  ],
+  "description": "A contributed hot graphic component that enables a user to click on hot spots over an image and display a detailed popup that includes an image with text.",
+  "main": "/js/adapt-hotgraphicWithAudio.js",
+  "displayName" : "Hotgraphic with Audio",
+  "component" : "hotgraphicWithAudio",
+  "assetFields" : [
+    "_graphic.src",
+    "_items[]._graphic.src"
+  ],
+  "keywords": [
+    "adapt-plugin",
+    "adapt-component"
+  ],
+  "license": "GPLv3"
+}
