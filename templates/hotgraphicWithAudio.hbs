@@ -1,11 +1,11 @@
 {{! Maintainers - Kevin Corry, Shahfaisal Patel <shahfaisal.patel@exultcorp.com>}}
-<div class="hotgraphicWithAudio-inner component-inner" role="region" aria-label="{{_globals._components._hotGraphic.ariaRegion}}" {{#if _globals._components._hotGraphic.ariaRegion}}tabindex="0"{{/if}}>
+<div class="hotgraphicWithAudio-inner component-inner" role="region" aria-label="">
     {{> component this}}
     <div class="hotgraphicWithAudio-widget component-widget">
 
         <div class="hotgraphicWithAudio-graphic">
 
-            <div class="hotgraphicWithAudio-popup" role="dialog" aria-label="{{_globals._accessibility._ariaLabels.hotgraphicWithAudioPopUp}}">
+            <div class="hotgraphicWithAudio-popup" role="dialog" aria-label="">
 
                 <div class="hotgraphicWithAudio-popup-toolbar component-item-color clearfix">
                     <div class="hotgraphicWithAudio-popup-nav component-item-color">
@@ -30,21 +30,25 @@
                 <div class="hotgraphicWithAudio-popup-inner clearfix">
                     {{#each _items}}
                     <div class="hotgraphicWithAudio-item component-item item-{{@index}}">
-                        <div class="hotgraphicWithAudio-item-graphic">
-                            <div class="hotgraphicWithAudio-item-graphic-inner">
-                                <img src="{{_graphic.src}}" alt="{{_graphic.alt}}"/>
-                            </div>
-                        </div>
-                        <div class="hotgraphicWithAudio-item-body">
-                            <div class="hotgraphicWithAudio-item-body-inner">
-                                <div class="h5">
-                                    {{{a11y_text title}}}
+                        {{#each _page}}
+                        <div class="hotgraphicWithAudio-page page-{{@index}}">
+                            <div class="hotgraphicWithAudio-item-graphic">
+                                <div class="hotgraphicWithAudio-item-graphic-inner">
+                                    <img src="{{_graphic.src}}" alt="{{_graphic.alt}}"/>
                                 </div>
-                                <p>
-                                    {{{a11y_text body}}}
-                                </p>
+                            </div>
+                            <div class="hotgraphicWithAudio-item-body">
+                                <div class="hotgraphicWithAudio-item-body-inner">
+                                    <div class="h5">
+                                        {{{a11y_text title}}}
+                                    </div>
+                                    <p>
+                                        {{{a11y_text body}}}
+                                    </p>
+                                </div>
                             </div>
                         </div>
+                        {{/each}}
                     </div>
                     {{/each}}
                 </div>
@@ -54,6 +58,7 @@
             {{#each _items}}
             <a href="#" class="hotgraphicWithAudio-graphic-pin component-item-text-color {{#if _isVisited}}visited{{/if}}" data-id="item-{{@index}}" style="top:{{{_top}}}%; left:{{{_left}}}%;" role="button" aria-label="Item {{numbers @index}}. {{title}}.">
                 <div class="hotgraphicWithAudio-graphic-pin-icon component-item-color icon icon-pin"></div>
+                {{#each _page}}
                 {{#if audioSrc}}
                 <div class="hotgraphicWithAudio-item-audio">
                     <audio preload="none">
@@ -63,6 +68,7 @@
                     </audio>
                 </div>
                 {{/if}}
+                {{/each}}
             </a>
             {{/each}}
         </div>
