@@ -1,0 +1,196 @@
+.hotgraphicWithAudio-component {
+
+    .hotgraphicWithAudio-graphic {
+        position: relative;
+    }
+
+    .hotgraphicWithAudio-graphic-pin {
+        display: block;
+        position: absolute;
+        top: 0%;
+        left: 0%;
+        background-color:@item-text-color;
+        border-radius:50%;
+
+        &.visited {
+            .hotgraphicWithAudio-graphic-pin-icon {
+                color: @item-visited-color;
+            }
+        }
+    }
+
+    .hotgraphicWithAudio-graphic-pin-icon {
+        color: @item-color;
+        font-size: (@icon-size*2);
+        width:auto;
+        height:auto;
+    }
+
+    .hotgraphicWithAudio-popup {
+        display: none;
+        width: auto;
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        top: 0px;
+        height: auto;
+        margin: 40px;
+        background-color: @background-color;
+        border: @item-border;
+        z-index: 5;
+
+    }
+
+    .hotgraphicWithAudio-popup-toolbar {
+        padding: 20px;
+        position: relative;
+        background-color: @item-color;
+    }
+
+    .hotgraphicWithAudio-popup-nav {
+        background-color: @item-color;
+        &.first {
+            .hotgraphicWithAudio-popup-controls.back {
+                cursor: default;
+                .icon-controls-small-left:before {
+                    display:none;
+                }
+            }
+        }
+        &.last {
+            .hotgraphicWithAudio-popup-controls.next {
+                cursor: default;
+                .icon-controls-small-right:before {
+                    display:none;
+                }
+            }
+        }
+    }
+
+    .hotgraphicWithAudio-popup-done {
+        color: @item-text-color;
+        position: absolute;
+        top: 22px;
+        right: 20px;
+        .dir-rtl & {
+            right: inherit;
+            left: 20px;
+        }
+    }
+
+    .hotgraphicWithAudio-popup-audio {
+        color: @item-text-color;
+        position: absolute;
+        top: 22px;
+        left: 140px;
+        .dir-rtl & {
+            left: inherit;
+            right: 140px;
+        }
+    }
+
+    .hotgraphicWithAudio-popup-arrow-l {
+        color: @item-text-color;
+    }
+
+    .hotgraphicWithAudio-popup-arrow-r {
+        color: @item-text-color;
+    }
+
+    .hotgraphicWithAudio-popup-close {
+        color: @item-text-color;
+    }
+
+    .hotgraphicWithAudio-popup-sound {
+        color: @item-text-color;
+    }
+
+    .hotgraphicWithAudio-popup-count {
+        color: @item-text-color;
+        float: left;
+        .dir-rtl & {
+            float: right;
+        }
+        height: 30px;
+        line-height: 30px;
+        margin-right: @item-padding-right;
+        .dir-rtl & {
+            margin-right: inherit;
+            margin-left: @item-padding-right;
+        }
+        vertical-align: baseline;
+    }
+
+    .hotgraphicWithAudio-popup-controls {
+        float: left;
+        .dir-rtl & {
+            float: right;
+        }
+        margin-right: @item-padding-right;
+        .dir-rtl & {
+            margin-right: inherit;
+            margin-left: @item-padding-right;
+
+        }
+        padding: 3px;
+    }
+
+    .hotgraphicWithAudio-popup-inner {
+        padding: 20px;
+    }
+
+    .hotgraphicWithAudio-item-graphic {
+        width: 50%;
+        float: right;
+        .dir-rtl & {
+            float: left;
+        }
+        text-align: center;
+    }
+
+    .hotgraphicWithAudio-item-graphic-inner{
+        padding-left: 5%;
+        .dir-rtl & {
+            padding-left: inherit;
+            padding-right: @item-padding-left;
+        }
+    }
+
+    .hotgraphicWithAudio-item-body {
+        width: 50%;
+        float: left;
+        .dir-rtl & {
+            float: right;
+        }
+    }
+
+    a {
+        text-decoration: none;
+    }
+}
+
+.no-touch {
+    .hotgraphicWithAudio-component {
+        .hotgraphicWithAudio-graphic-pin-icon {
+            &:hover {
+                color: @item-hover-color;
+            }
+        }
+        .hotgraphicWithAudio-popup-close {
+            &:hover {
+                color: @item-hover-color;
+            }
+        }
+        .hotgraphicWithAudio-popup-arrow-r {
+            &:hover {
+                color: @item-hover-color;
+            }
+        }
+        .hotgraphicWithAudio-popup-arrow-l {
+            &:hover {
+                color: @item-hover-color;
+            }
+        }
+    }
+
+}
