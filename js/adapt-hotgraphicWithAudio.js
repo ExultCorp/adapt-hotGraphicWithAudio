@@ -46,17 +46,16 @@ define(function(require) {
             this.$('.component-inner').on('inview', _.bind(this.inview, this));
             this.$('.hotgraphicWithAudio-widget').imageready(_.bind(function() {
                 this.setReadyStatus();
-            }, this));
 
-            var modelOptions = {};
-            modelOptions.pluginPath = 'assets/';
-            //modelOptions.success = _.bind(this.onPlayerReady, this);
-            if($('html').hasClass('ie8')) {
-                _.each(this.$('audio'), function(item, index) {
-                    var audioObject = new MediaElementPlayer($(item), modelOptions);
-                    this.model.get("_items")[index].audioObject = audioObject;
-                }, this)
-            }
+                if($('html').hasClass('ie8')) {
+                    _.each(this.$('.hotgraphicWithAudio-graphic-pin'), function(item, index) {
+                        _.each(this.$(item).find('audio'), function(audioItem, audioItemIndex) {
+                            var audioObject = new MediaElementPlayer($(audioItem));
+                            this.model.get("_items")[index]._page[audioItemIndex].audioObject = audioObject;
+                        }, this);
+                    }, this);
+                }
+            }, this));
 
             this.$('.mejs-container').addClass('display-none');
 
@@ -81,7 +80,6 @@ define(function(require) {
             // If reset is enabled set defaults
             if (isResetOnRevisit) {
                 this.model.reset(isResetOnRevisit);
-
                 _.each(this.model.get('_items'), function(item) {
                     item._isVisited = false;
                 });
@@ -89,10 +87,8 @@ define(function(require) {
         },
 
         reRender: function() {
-            console.log("reRender");
             if (Adapt.device.screenSize != 'large') {
                 this.replaceWithNarrative();
-
             }
         },
 
@@ -126,15 +122,15 @@ define(function(require) {
 
         applyNavigationClasses: function (index) {
             var $nav = this.$('.hotgraphicWithAudio-popup-nav'),
-                itemCount = this.$('.hotgraphicWithAudio-item').length;
+                pageCount = this.$('.hotgraphicWithAudio-item.active').find('.hotgraphicWithAudio-page').length;
 
-            $nav.removeClass('first').removeClass('last');
+            $nav.removeClass('first last');
             this.$('.hotgraphicWithAudio-popup-done').a11y_cntrl_enabled(true);
             if(index <= 0) {
                 this.$('.hotgraphicWithAudio-popup-nav').addClass('first');
                 this.$('.hotgraphicWithAudio-popup-controls.back').a11y_cntrl_enabled(false);
                 this.$('.hotgraphicWithAudio-popup-controls.next').a11y_cntrl_enabled(true);
-            } else if (index >= itemCount-1) {
+            } else if (index >= pageCount-1) {
                 this.$('.hotgraphicWithAudio-popup-nav').addClass('last');
                 this.$('.hotgraphicWithAudio-popup-controls.back').a11y_cntrl_enabled(true);
                 this.$('.hotgraphicWithAudio-popup-controls.next').a11y_cntrl_enabled(false);
@@ -149,23 +145,88 @@ define(function(require) {
             this.$('.hotgraphicWithAudio-popup-inner').a11y_on(false);
             var currentHotSpot = $(event.currentTarget).data('id');
             this.$('.hotgraphicWithAudio-item').hide().removeClass('active');
-            this.$('.'+currentHotSpot).show().addClass('active');
-            var currentIndex = this.$('.hotgraphicWithAudio-item.active').index();
-            if($('html').hasClass('ie8')) {
-                 this.playAudio(this.model.get("_items")[currentIndex].audioObject);
-            } else {
-                this.playAudioForElement(this.$('.hotgraphicWithAudio-item-audio audio').eq(currentIndex)[0]);
-            }
-            this.setVisited(currentIndex);
-            this.$('.hotgraphicWithAudio-popup-count .current').html(currentIndex+1);
-            this.$('.hotgraphicWithAudio-popup-count .total').html(this.$('.hotgraphicWithAudio-item').length);
+            var $currentHotSpotItem = this.$('.'+currentHotSpot).show().addClass('active');
+            var currentHotspotIndex = $currentHotSpotItem.index();
+
+            this.$('.hotgraphicWithAudio-page').hide().removeClass('activePage');
+            $currentHotSpotItem.find('.hotgraphicWithAudio-page').eq(0).addClass('activePage').show();
+
+            this.setVisited(currentHotspotIndex);
+
+            this.$('.hotgraphicWithAudio-popup-count .current').html(1);
+            this.$('.hotgraphicWithAudio-popup-count .total').html(this.model.get('_items')[currentHotspotIndex]._page.length);
             this.$('.hotgraphicWithAudio-popup').show();
             this.$('.hotgraphicWithAudio-popup-inner .active').a11y_on(true);
 
             Adapt.trigger('popup:opened',  this.$('.hotgraphicWithAudio-popup-inner'));
 
             this.$('.hotgraphicWithAudio-popup-inner .active').a11y_focus();
-            this.applyNavigationClasses(currentIndex);
+            this.applyNavigationClasses(0);
+            this.$('.hotgraphicWithAudio-popup-sound').removeClass('icon-sound-mute');
+
+            if($('html').hasClass('ie8')) {
+                this.playAudioAtIndex(currentHotspotIndex, 0);
+            } else {
+                var audioElement = this.$('.hotgraphicWithAudio-graphic-pin').eq(currentHotspotIndex).find('audio')[0];
+                this.playAudioForElement(audioElement);
+            }
+        },
+
+        nextHotGraphic: function (event) {
+            event.preventDefault();
+            var $activeHotSpotItem = this.$('.hotgraphicWithAudio-item.active');
+            var $currentPages = $activeHotSpotItem.find('.hotgraphicWithAudio-page');
+            var $currentActivePage = $activeHotSpotItem .find('.hotgraphicWithAudio-page.activePage');
+            var activePageIndex = $currentPages.index($currentActivePage);
+
+            if (activePageIndex < ($currentPages.length-1)) {
+                $currentActivePage.removeClass('activePage').hide();
+                $currentPages.eq(activePageIndex + 1).addClass('activePage').show();
+                this.$('.hotgraphicWithAudio-popup-count .current').html(activePageIndex+2);
+                this.$('.hotgraphicWithAudio-popup-inner').a11y_on(false);
+            }
+            this.applyNavigationClasses(activePageIndex+1);
+            this.$('.hotgraphicWithAudio-popup-inner .active').a11y_on(true);
+            this.$('.hotgraphicWithAudio-popup-inner .active').a11y_focus();
+
+            newActivePageIndex = $currentPages.index(this.$('.hotgraphicWithAudio-page.activePage'));
+            if (newActivePageIndex != activePageIndex) {
+                if($('html').hasClass('ie8')) {
+                    this.playAudioAtIndex($activeHotSpotItem.index(), newActivePageIndex);
+                } else {
+                    var audioElement = this.$('.hotgraphicWithAudio-graphic-pin').eq($activeHotSpotItem.index()).find('audio')[newActivePageIndex];
+                    this.playAudioForElement(audioElement);
+                }
+            }
+            this.$('.hotgraphicWithAudio-popup-sound').removeClass('icon-sound-mute');
+        },
+
+        previousHotGraphic: function (event) {
+            event.preventDefault();
+            var $activeHotSpotItem = this.$('.hotgraphicWithAudio-item.active');
+            var $currentPages = $activeHotSpotItem.find('.hotgraphicWithAudio-page');
+            var $currentActivePage = $activeHotSpotItem .find('.hotgraphicWithAudio-page.activePage');
+            var activePageIndex = $currentPages.index($currentActivePage);
+
+            if (activePageIndex > 0) {
+                $currentActivePage.hide().removeClass('activePage');
+                $currentPages.eq(activePageIndex - 1).show().addClass('activePage');
+                this.$('.hotgraphicWithAudio-popup-count .current').html(activePageIndex);
+                this.$('.hotgraphicWithAudio-popup-inner').a11y_on(false);
+            }
+            this.applyNavigationClasses(activePageIndex-1);
+            this.$('.hotgraphicWithAudio-popup-inner .active').a11y_on(true);
+            this.$('.hotgraphicWithAudio-popup-inner .active').a11y_focus();
+
+            var newActivePageIndex = $currentPages.index(this.$('.hotgraphicWithAudio-page.activePage'));
+            if (newActivePageIndex != activePageIndex) {
+                if($('html').hasClass('ie8')) {
+                   this.playAudioAtIndex($activeHotSpotItem.index(), newActivePageIndex);
+                } else {
+                    var audioElement = this.$('.hotgraphicWithAudio-graphic-pin').eq($activeHotSpotItem.index()).find('audio')[newActivePageIndex];
+                    this.playAudioForElement(audioElement);
+                }
+            }
             this.$('.hotgraphicWithAudio-popup-sound').removeClass('icon-sound-mute');
         },
 
@@ -173,9 +234,9 @@ define(function(require) {
             if(event && event.preventDefault) event.preventDefault();
             var audioElement = this.model.get("_currentAudioElement");
             if(audioElement==''){
-                var curIndex = $('.hotgraphicWithAudio-item.active').index();
+                var curIndex = this.$('.hotgraphicWithAudio-page').index(this.$('.hotgraphicWithAudio-page.activePage'));
                 if($('html').hasClass('ie8')) {
-                    this.playAudio(this.model.get("_items")[curIndex].audioObject);
+                    this.playAudioAtIndex(this.$('.hotgraphicWithAudio-item.active').index(), curIndex);
                 } else {
                     var audioElement = this.$('.hotgraphicWithAudio-item-audio audio').eq(curIndex)[0];
                     this.playAudioForElement(audioElement);
@@ -193,7 +254,7 @@ define(function(require) {
 
         closeHotGraphic: function(event) {
             event.preventDefault();
-            //var currentIndex = this.$('.hotgraphicWithAudio-item.active').index();
+            this.$('.hotgraphicWithAudio-page').hide().removeClass('activePage');
             this.$('.hotgraphicWithAudio-popup').hide();
             Adapt.trigger('popup:closed',  this.$('.hotgraphicWithAudio-popup-inner'));
             if($('html').hasClass('ie8')) {
@@ -205,7 +266,7 @@ define(function(require) {
 
         onAudioEnded: function(event) {
             if($('html').hasClass('ie8')) {
-                this.model.set("_currentAudioObject").setCurrentTime(0);
+                this.stopAudio();
             } else {
                 this.model.get("_currentAudioElement").currentTime = 0.0;
                 this.model.set("_currentAudioElement", '');
@@ -213,16 +274,30 @@ define(function(require) {
             this.$('.hotgraphicWithAudio-popup-sound').addClass('icon-sound-mute');
         },
 
-        playAudio: function (audioObject) {
-            audioObject.play();
-            this.model.set("_currentAudioObject", audioObject);
+        playAudioAtIndex: function (currentItemIndex, currentPageIndex) {
+            var item = (currentItemIndex >= 0) ? this.model.get("_items")[currentItemIndex] : null;
+            var audioObject = item && item._page && (currentPageIndex >= 0) ? item._page[currentPageIndex].audioObject : null;
+            if(audioObject) {
+                audioObject.play();
+                this.model.set("_currentAudioIndexObject", {
+                    currentItemIndex: currentItemIndex,
+                    currentPageIndex: currentPageIndex
+                });
+            }
         },
 
         stopAudio: function () {
-            var currentAudioObject = this.model.set("_currentAudioObject");
-            //currentAudioObject.pause();
-            currentAudioObject.setVolume(0);
-            currentAudioObject.setCurrentTime(0);
+            var currentAudioIndexObject = this.model.get("_currentAudioIndexObject");
+            var currentItemIndex = currentAudioIndexObject ? currentAudioIndexObject.currentItemIndex : null;
+            var currentPageIndex = currentAudioIndexObject ? currentAudioIndexObject.currentPageIndex : null;
+            var item = (currentItemIndex >= 0) ? this.model.get("_items")[currentItemIndex] : null;
+            var audioObject = item && item._page && (currentPageIndex >= 0) ? item._page[currentPageIndex].audioObject : null;
+
+            if(audioObject) {
+                audioObject.setCurrentTime(0);
+                audioObject.pause();
+                this.model.set("_currentAudioObjectIndex", {});
+            }
         },
 
         playAudioForElement: function(audioElement) {
@@ -249,59 +324,6 @@ define(function(require) {
                 }
                 this.model.set("_currentAudioElement", '');
             }
-        },
-
-        onPlayerReady: function() {
-        },
-
-        previousHotGraphic: function (event) {
-            event.preventDefault();
-            var currentIndex = this.$('.hotgraphicWithAudio-item.active').index();
-            if (currentIndex > 0) {
-                this.$('.hotgraphicWithAudio-item.active').hide().removeClass('active');
-                this.$('.hotgraphicWithAudio-item').eq(currentIndex-1).show().addClass('active');
-                this.setVisited(currentIndex-1);
-                this.$('.hotgraphicWithAudio-popup-count .current').html(currentIndex);
-                this.$('.hotgraphicWithAudio-popup-inner').a11y_on(false);
-            }
-            this.applyNavigationClasses(currentIndex-1);
-            this.$('.hotgraphicWithAudio-popup-inner .active').a11y_on(true);
-            this.$('.hotgraphicWithAudio-popup-inner .active').a11y_focus();
-            var newIndex = $('.hotgraphicWithAudio-item.active').index();
-            if (newIndex != currentIndex) {
-                if($('html').hasClass('ie8')) {
-                    this.playAudio(this.model.get("_items")[newIndex].audioObject);
-                } else {
-                    var audioElement = $($(event.currentTarget).closest('.hotgraphicWithAudio-popup').siblings('.hotgraphicWithAudio-graphic-pin')[newIndex]).find('.hotgraphicWithAudio-item-audio audio')[0];
-                    this.playAudioForElement(audioElement);
-                }
-            }
-            this.$('.hotgraphicWithAudio-popup-sound').removeClass('icon-sound-mute');
-        },
-
-        nextHotGraphic: function (event) {
-            event.preventDefault();
-            var currentIndex = this.$('.hotgraphicWithAudio-item.active').index();
-            if (currentIndex < (this.$('.hotgraphicWithAudio-item').length-1)) {
-                this.$('.hotgraphicWithAudio-item.active').hide().removeClass('active');
-                this.$('.hotgraphicWithAudio-item').eq(currentIndex+1).show().addClass('active');
-                this.setVisited(currentIndex+1);
-                this.$('.hotgraphicWithAudio-popup-count .current').html(currentIndex+2);
-                this.$('.hotgraphicWithAudio-popup-inner').a11y_on(false);
-            }
-            this.applyNavigationClasses(currentIndex+1);
-            this.$('.hotgraphicWithAudio-popup-inner .active').a11y_on(true);
-            this.$('.hotgraphicWithAudio-popup-inner .active').a11y_focus();
-            var newIndex = $('.hotgraphicWithAudio-item.active').index();
-            if (newIndex != currentIndex) {
-                if($('html').hasClass('ie8')) {
-                    this.playAudio(this.model.get("_items")[newIndex].audioObject);
-                } else {
-                    var audioElement = $($(event.currentTarget).closest('.hotgraphicWithAudio-popup').siblings('.hotgraphicWithAudio-graphic-pin')[newIndex]).find('.hotgraphicWithAudio-item-audio audio')[0];
-                    this.playAudioForElement(audioElement);
-                }
-            }
-            this.$('.hotgraphicWithAudio-popup-sound').removeClass('icon-sound-mute');
         },
 
         setVisited: function(index) {
