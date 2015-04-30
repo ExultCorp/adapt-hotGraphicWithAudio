@@ -1,6 +1,6 @@
 {
-  "_id": "c-185",
-  "_parentId": "b-10",
+  "_id": "c-135",
+  "_parentId": "b-70",
   "_classes": "",
   "_type": "component",
   "_component": "hotgraphicWithAudio",
@@ -17,6 +17,11 @@
     {
       "_top": 58,
       "_left": 23,
+      "_narrativegraphic": {
+          "src": "course/en/images/narrative.png",
+          "alt": "narrative 1 alt text"
+      },
+      "strapline": "Introduction",
       "_page":[
         {
           "title": "Introduction 1-1",
@@ -26,7 +31,7 @@
             "alt": "Hot graphic pop-up pin. Select here to open."
           },
           "strapline": "Introduction",
-          "audioSrc": "course/en/audio/hotgraphicWithAudio/hot-graphic1",
+          "audioSrc": "course/en/audio/hot-graphic1",
           "audioTypes": [
             {
               "type": "mp3",
@@ -42,7 +47,7 @@
             "alt": "Hot graphic pop-up pin. Select here to open."
           },
           "strapline": "Introduction",
-          "audioSrc": "course/en/audio/hotgraphicWithAudio/hot-graphic1-2",
+          "audioSrc": "course/en/audio/hot-graphic1-2",
           "audioTypes": [
             {
               "type": "mp3",
@@ -55,6 +60,11 @@
     {
       "_top": 60,
       "_left": 80,
+      "_narrativegraphic": {
+        "src": "course/en/images/narrative_1.png",
+        "alt": "narrative 1 alt text"
+      },
+      "strapline": "What is responsive elearning?",
       "_page":[
         {
           "title": "What is responsive elearning? 1-1",
@@ -64,7 +74,7 @@
             "alt": "Hot graphic pop-up pin. Select here to open."
           },
           "strapline": "What is responsive elearning?",
-          "audioSrc": "course/en/audio/hotgraphicWithAudio/hot-graphic2-1",
+          "audioSrc": "course/en/audio/hot-graphic2-1",
           "audioTypes": [
             {
               "type": "mp3",
@@ -80,7 +90,7 @@
             "alt": "Hot graphic pop-up pin. Select here to open."
           },
           "strapline": "What is responsive elearning?",
-          "audioSrc": "course/en/audio/hotgraphicWithAudio/hot-graphic2-2",
+          "audioSrc": "course/en/audio/hot-graphic2-2",
           "audioTypes": [
             {
               "type": "mp3",
